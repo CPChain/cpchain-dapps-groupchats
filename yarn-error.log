@@ -1,0 +1,47 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn add truffle-assertions
+
+PATH: 
+  /Applications/Anaconda/anaconda/bin:/Applications/Anaconda/anaconda/condabin:/opt/local/sbin:/opt/local/bin:/Library/TeX/texbin:/Users/liaojinlong/.cargo/bin:/Users/liaojinlong/Libraries/android-sdk-macosx/tools:/Users/liaojinlong/Libraries/android-sdk-macosx/platform-tools:/Applications/Anaconda/anaconda/bin:/Users/liaojinlong/.ssh/bin:/Users/liaojinlong/softwares/fabric/fabric-samples/bin:/Users/liaojinlong/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/usr/local/share/dotnet:/Library/Apple/usr/bin:/Users/liaojinlong/Workspace/CPChain/chain/bin:/Users/liaojinlong/.cargo/bin:.:/Users/liaojinlong/Workspace/CPChain/deployment/bin:/Users/liaojinlong/bin/nushell-0.3.0:/usr/local/Cellar/gcc/9.1.0/bin:/Users/liaojinlong/Workspace/liaojl/lvyi/target/debug
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  12.16.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://github.com/Digital-MOB-Filecoin/filecoin-signing-tools-js: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141289:19)
+      at Object.onceWrapper (events.js:417:28)
+      at ClientRequest.emit (events.js:311:20)
+      at TLSSocket.emitRequestTimeout (_http_client.js:714:9)
+      at Object.onceWrapper (events.js:417:28)
+      at TLSSocket.emit (events.js:311:20)
+      at TLSSocket.Socket._onTimeout (net.js:478:8)
+      at listOnTimeout (internal/timers.js:549:17)
+      at processTimers (internal/timers.js:492:7)
+
+npm manifest: 
+  {
+      "scripts": {
+          "build": "truffle build",
+          "test": "truffle test",
+          "test:coverage": "truffle run coverage"
+      },
+      "devDependencies": {
+          "solidity-coverage": "^0.7.16",
+          "truffle": "^5.3.2",
+          "truffle-assertions": "^0.9.2",
+          "web3": "^1.3.5"
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

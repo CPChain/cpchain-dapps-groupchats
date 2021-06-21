@@ -1,11 +1,10 @@
 pragma solidity ^0.4.24;
-pragma experimental ABIEncoderV2;
 
 import "./lib/set.sol";
 
 import "./interfaces/IGroupChat.sol";
 
-contract Staking is IGroupChat {
+contract GroupChat is IGroupChat {
     using Set for Set.Data;
 
     address owner; // owner has permissions to modify parameters
@@ -108,6 +107,13 @@ contract Staking is IGroupChat {
     }
 
     /**
+     * Check if group already exists
+     */
+    function checkGroupName(string name) external view returns (bool) {
+        return group_names[name];
+    }
+
+    /**
      * Create a private group
      * Returns a id of the group
      * Emits a {CreateGroup} event
@@ -134,10 +140,6 @@ contract Staking is IGroupChat {
         groups[id].name = name;
         group_names[name] = true;
         emit ModifyGroupName(id, name);
-    }
-
-    function getGroup(uint id) external view returns (Group) {
-        return groups[id];
     }
 
     /**
@@ -342,6 +344,13 @@ contract Staking is IGroupChat {
         require(groups[id].existed, "The group not exists");
         require(groups[id].owner == msg.sender, "You're not the admin of the group");
         groups[id].banAll = false;
+    }
+
+    /**
+     * Whether the group is ban all
+     */
+    function isBanAll(uint id) external view returns(bool) {
+        return groups[id].banAll;
     }
 
     /**

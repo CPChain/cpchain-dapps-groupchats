@@ -1,5 +1,5 @@
-var Greeter = artifacts.require("./Greeter.sol");
+var GroupChat = artifacts.require("./GroupChat.sol");
 
 module.exports = function(deployer) {
-     deployer.deploy(Greeter, 'hello world'); //"参数在第二个变量携带"
+     deployer.deploy(GroupChat);
 };

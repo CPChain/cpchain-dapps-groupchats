@@ -40,6 +40,11 @@ interface IGroupChat {
     event ChangeGroupOwner(uint id, address admin);
 
     /**
+     * Check if group already exists
+     */
+    function checkGroupName(string name) external view returns (bool);
+
+    /**
      * Create public group. You can set the price which if someone wants to join the chat he should pay.
      * Extend information is in JSON formation.
      * Returns a id of the group
