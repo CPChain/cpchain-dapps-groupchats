@@ -134,6 +134,16 @@ interface IGroupChat {
     function unban(uint id, address member) external;
 
     /**
+     * Check a member whether is banned
+     */
+    function isBanned(uint id, address member) external view returns(bool);
+
+    /**
+     * Check a group if has this member
+     */
+    function has(uint id, address member) external view returns(bool);
+
+    /**
      * Set the upper limit of group chat.
      */
     function setUpperLimit(uint limit) external;
@@ -150,6 +160,16 @@ interface IGroupChat {
      * Emits a {SendMessage} event
      */
     function sendMessage(uint id, string message) external;
+
+    /**
+     * Ban all members exclude the owner, make this chat be a notify-only chat.
+     */
+    function banAll(uint id) external;
+
+    /**
+     * Unban all members.
+     */
+    function unbanAll(uint id) external;
 
     /**
      * Change the owner of the contract. If the address is a contract, the contract should be IAdmin.
