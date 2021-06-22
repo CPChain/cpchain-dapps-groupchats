@@ -188,7 +188,7 @@ contract GroupChat is IGroupChat {
     /**
      * Get the encryptedAES of a group
      */
-    function getEncryptedAES(uint id) external returns (string) {
+    function getEncryptedAES(uint id) external view returns (string) {
         return groups[id].encryptedAES;
     }
 
