@@ -168,4 +168,19 @@ contract("GroupChat", (accounts) => {
       return true
     })
   })
+  it("Remove user", async ()=> {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.remove(10, accounts[2])
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("The group not exists"))
+    }
+    try {
+      await instance.remove(1, accounts[2], {from: accounts[9]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You're not the admin of the group"))
+    }
+  })
 })
