@@ -1,12 +1,8 @@
 pragma solidity ^0.4.24;
 
-import "./lib/set.sol";
-
 import "./interfaces/IGroupChat.sol";
 
 contract GroupChat is IGroupChat {
-    using Set for Set.Data;
-
     address owner; // owner has permissions to modify parameters
     bool public enabled = true; // if upgrade contract, then the old contract should be disabled
 
@@ -36,6 +32,7 @@ contract GroupChat is IGroupChat {
         string extend;
         bool banAll; // If banAll, notify only.
         bool existed;
+        mapping(string => bool) aliasNames;
     }
 
     mapping(uint => Group) internal groups;
@@ -141,6 +138,7 @@ contract GroupChat is IGroupChat {
         require(!group_names[name], "This group already exists");
         require(groups[id].owner == msg.sender, "Only the owner can set the name");
         group_names[groups[id].name] = false;
+        delete group_names[groups[id].name];
         groups[id].name = name;
         group_names[name] = true;
         emit ModifyGroupName(id, name);
@@ -251,7 +249,13 @@ contract GroupChat is IGroupChat {
     function setAliasName(uint id, string alias) external onlyEnabled {
         require(groups[id].existed, "The group not exists");
         require(members[id][msg.sender].existed, "You haven't joinned this group");
+        require(!groups[id].aliasNames[alias], "This alias name have been used");
+        if (bytes(members[id][msg.sender].alias).length > 0) {
+            groups[id].aliasNames[members[id][msg.sender].alias] = false;
+            delete groups[id].aliasNames[members[id][msg.sender].alias];
+        }
         members[id][msg.sender].alias = alias;
+        groups[id].aliasNames[alias] = true;
     }
 
     function getAliasName(uint id, address member) external view returns (string) {
