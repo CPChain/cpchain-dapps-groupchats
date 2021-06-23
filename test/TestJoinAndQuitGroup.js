@@ -117,4 +117,24 @@ contract("GroupChat", (accounts) => {
       assert.ok(error.toString().includes("You have been removed by admin"))
     }
   })
+  it("Get and set alias name", async ()=> {
+    const instance = await GroupChat.deployed();
+    await instance.join(1, {from: accounts[3], value: utils.cpc(0)})
+    assert.equal(await instance.getAliasName(1, accounts[3]), "", "The alias name is error")
+
+    let tx = await instance.setAliasName(1, "account3", {from: accounts[3]})
+    truffleAssert.eventEmitted(tx, 'ModifyAliasName', (e) => {
+      assert.equal(e.id, 1)
+      assert.equal(e.member, accounts[3])
+      assert.equal(e.alias, "account3")
+      return true
+    })
+    assert.equal(await instance.getAliasName(1, accounts[3]), "account3", "The alias name is error")
+    try {
+      await instance.setAliasName(1, "account3", {from: accounts[0]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("This alias name have been used"))
+    }
+  })
 })

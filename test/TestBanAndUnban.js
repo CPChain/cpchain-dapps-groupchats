@@ -7,5 +7,8 @@ contract("GroupChat", (accounts) => {
     const instance = await GroupChat.deployed();
     await instance.createPublicGroup('test', 'xxxx', 0, '{}')
   })
+  it("Ban owner", async() => {
+    
+  })
   
 })

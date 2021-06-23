@@ -256,6 +256,7 @@ contract GroupChat is IGroupChat {
         }
         members[id][msg.sender].alias = alias;
         groups[id].aliasNames[alias] = true;
+        emit ModifyAliasName(id, msg.sender, alias);
     }
 
     function getAliasName(uint id, address member) external view returns (string) {

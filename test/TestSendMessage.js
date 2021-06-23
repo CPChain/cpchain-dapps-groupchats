@@ -71,5 +71,15 @@ contract("GroupChat", (accounts) => {
   })
   it('Send message after quit group', async ()=> {
     const instance = await GroupChat.deployed();
+    // quit
+    await instance.quit(1, {from: accounts[1]})
+
+    // send message
+    try {
+      await instance.sendMessage(1, 'message', {from: accounts[1]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You're not exists in this group"))
+    }
   })
 })

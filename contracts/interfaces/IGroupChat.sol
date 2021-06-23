@@ -14,7 +14,7 @@ interface IGroupChat {
     event ModifyGroupPrice(uint id, uint256 price);
 
     // Modify alias name
-    event ModifyAliasName(uint id, address user, string alias);
+    event ModifyAliasName(uint id, address member, string alias);
 
     // Join a group
     event JoinGroup(uint id, address addr);
