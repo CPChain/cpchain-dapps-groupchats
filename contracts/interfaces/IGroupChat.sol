@@ -13,6 +13,9 @@ interface IGroupChat {
     // Modify price
     event ModifyGroupPrice(uint id, uint256 price);
 
+    // Modify alias name
+    event ModifyAliasName(uint id, address user, string alias);
+
     // Join a group
     event JoinGroup(uint id, address addr);
 
@@ -38,6 +41,12 @@ interface IGroupChat {
 
     // Change the owner of a group
     event ChangeGroupOwner(uint id, address admin);
+
+    // Ban All
+    event BanAll(uint id, address admin);
+
+    // UnBan All
+    event UnBanAll(uint id, address admin);
 
     /**
      * Check if group already exists
@@ -168,13 +177,26 @@ interface IGroupChat {
 
     /**
      * Ban all members exclude the owner, make this chat be a notify-only chat.
+     * Emits a {BanAll} event.
      */
     function banAll(uint id) external;
 
     /**
      * Unban all members.
+     * Emits a {UnBanAll} event.
      */
     function unbanAll(uint id) external;
+
+    /**
+     * Set the alias name in a group
+     * Emits a {ModifyAliasName} event.
+     */
+    function setAliasName(uint id, string alias) external;
+
+    /**
+     * Get alias name of a member
+     */
+    function getAliasName(uint id, address member) external view returns (string);
 
     /**
      * Change the owner of the contract. If the address is a contract, the contract should be IAdmin.

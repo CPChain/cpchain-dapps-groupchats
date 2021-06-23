@@ -20,6 +20,7 @@ contract GroupChat is IGroupChat {
         bool banned; // A member can't send message when be banned
         uint seq; // sequence of this group
         bool existed;
+        string alias;
     }
 
     struct Group {
@@ -89,7 +90,8 @@ contract GroupChat is IGroupChat {
             addr: msg.sender,
             banned: false,
             seq: 0,
-            existed: true
+            existed: true,
+            alias: ""
         });
         emit CreateGroup(is_private, name, encryptedAES, price, extend, group_seq);
         emit JoinGroup(group_seq, msg.sender);
@@ -219,7 +221,8 @@ contract GroupChat is IGroupChat {
             addr: msg.sender,
             banned: false,
             seq: 0,
-            existed: true
+            existed: true,
+            alias: ""
         });
         emit JoinGroup(id, msg.sender);
     }
@@ -235,6 +238,16 @@ contract GroupChat is IGroupChat {
         groups[id].cnt -= 1;
         members[id][msg.sender].existed = false;
         emit QuitGroup(id, msg.sender);
+    }
+
+    function setAliasName(uint id, string alias) external onlyEnabled {
+        require(groups[id].existed, "The group not exists");
+        require(members[id][msg.sender].existed, "You haven't joinned this group");
+        members[id][msg.sender].alias = alias;
+    }
+
+    function getAliasName(uint id, address member) external view returns (string) {
+        return members[id][msg.sender].alias;
     }
 
     /**

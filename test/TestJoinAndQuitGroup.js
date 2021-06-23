@@ -50,4 +50,21 @@ contract("GroupChat", (accounts) => {
     const balance0_2 = await utils.getBalance(accounts[0])
     assert.equal(utils.add(balance0_1, utils.cpc(1)).toString(), balance0_2, "balance should equal")
   })
+  it('quit group', async ()=> {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.quit(1)
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("Owner can't quit"))
+    }
+    let tx = await instance.quit(1, {from: accounts[1]})
+    truffleAssert.eventEmitted(tx, 'QuitGroup', (e) => {
+      assert.equal(e.id, 1)
+      assert.equal(e.addr, accounts[1])
+      return true
+    })
+    assert.equal(await instance.has(1, accounts[1]), false, 'should not have this address')
+    assert.equal(await instance.countOf(1), 1, 'The cnt of group is error')
+  })
 })
