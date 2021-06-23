@@ -309,6 +309,9 @@ contract GroupChat is IGroupChat {
      * Check a member whether is banned
      */
     function isBanned(uint id, address member) external view returns(bool) {
+        if(groups[id].banAll) {
+            return true;
+        }
         return members[id][member].banned;
     }
 
@@ -362,6 +365,7 @@ contract GroupChat is IGroupChat {
         require(groups[id].existed, "The group not exists");
         require(groups[id].owner == msg.sender, "You're not the admin of the group");
         groups[id].banAll = true;
+        emit BanAll(id, msg.sender);
     }
 
     /**
@@ -371,6 +375,7 @@ contract GroupChat is IGroupChat {
         require(groups[id].existed, "The group not exists");
         require(groups[id].owner == msg.sender, "You're not the admin of the group");
         groups[id].banAll = false;
+        emit UnBanAll(id, msg.sender);
     }
 
     /**

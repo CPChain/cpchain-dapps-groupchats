@@ -115,5 +115,80 @@ contract("GroupChat", (accounts) => {
       assert.equal(e.admin, accounts[0])
       return true
     })
+    assert.equal(await instance.isBanned(1, accounts[1]), false, "This member shouldn't have been banned")
+    assert.equal(await instance.isBanned(1, accounts[2]), false, "This member shouldn't have been banned")
+  })
+  it('Ban All: unexisted group', async () => {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.banAll(10)
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("The group not exists"))
+    }
+  })
+  it('Ban All: wrong admin', async () => {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.banAll(1, {from: accounts[1]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You're not the admin of the group"))
+    }
+  })
+  it("Ban all", async ()=> {
+    const instance = await GroupChat.deployed();
+    let tx = await instance.banAll(1)
+    truffleAssert.eventEmitted(tx, 'BanAll', (e) => {
+      assert.equal(e.id, 1)
+      assert.equal(e.admin, accounts[0])
+      return true
+    })
+    assert.equal(await instance.isBanned(1, accounts[1]), true, "This member should have been banned")
+    assert.equal(await instance.isBanned(1, accounts[2]), true, "This member should have been banned")
+    assert.equal(await instance.isBanAll(1), true)
+  })
+  it("Only admin can send message", async ()=> {
+    const instance = await GroupChat.deployed();
+    // accounts[2] can't send message
+    try {
+      await instance.sendMessage(1, "message", {from: accounts[2]})
+    } catch(error) {
+      assert.ok(error.toString().includes("The group only can allow the owner send message"))
+    }
+    await instance.sendMessage(1, "message", {from: accounts[0]})
+  })
+  it('Unban All: unexisted group', async () => {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.unbanAll(10)
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("The group not exists"))
+    }
+  })
+  it('Unban All: wrong admin', async () => {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.unbanAll(1, {from: accounts[1]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You're not the admin of the group"))
+    }
+  })
+  it("Unban all", async ()=> {
+    const instance = await GroupChat.deployed();
+    let tx = await instance.unbanAll(1)
+    truffleAssert.eventEmitted(tx, 'UnBanAll', (e) => {
+      assert.equal(e.id, 1)
+      assert.equal(e.admin, accounts[0])
+      return true
+    })
+    assert.equal(await instance.isBanned(1, accounts[1]), false, "This member shouldn't have been banned")
+    assert.equal(await instance.isBanned(1, accounts[2]), false, "This member shouldn't have been banned")
+
+    // accounts[2] can send message now
+    await instance.sendMessage(1, "message", {from: accounts[2]})
+    assert.equal(await instance.isBanAll(1), false)
   })
 })
