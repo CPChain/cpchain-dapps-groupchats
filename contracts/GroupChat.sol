@@ -20,6 +20,7 @@ contract GroupChat is IGroupChat {
         bool banned; // A member can't send message when be banned
         uint seq; // sequence of this group
         bool existed;
+        bool removed; // If the member be removed by admin, then can't join again
         string alias;
     }
 
@@ -91,7 +92,8 @@ contract GroupChat is IGroupChat {
             banned: false,
             seq: 0,
             existed: true,
-            alias: ""
+            alias: "",
+            removed: false
         });
         emit CreateGroup(is_private, name, encryptedAES, price, extend, group_seq);
         emit JoinGroup(group_seq, msg.sender);
@@ -212,18 +214,24 @@ contract GroupChat is IGroupChat {
     function join(uint id) external payable onlyEnabled {
         require(groups[id].existed, "The group not exists");
         require(groups[id].cnt <= members_upper_limit, "The group is full");
+        require(!members[id][msg.sender].removed, "You have been removed by admin");
         require(!members[id][msg.sender].existed, "You have joinned this group");
         require(msg.value == groups[id].price, "The value is not equal to the price");
         groups[id].owner.transfer(msg.value);
         groups[id].cnt += 1;
-        members[id][msg.sender] = Member({
-            groupID: id,
-            addr: msg.sender,
-            banned: false,
-            seq: 0,
-            existed: true,
-            alias: ""
-        });
+        if (members[id][msg.sender].seq > 0) {
+            members[id][msg.sender].existed = true;
+        } else {
+            members[id][msg.sender] = Member({
+                groupID: id,
+                addr: msg.sender,
+                banned: false,
+                seq: 0,
+                existed: true,
+                alias: "",
+                removed: false
+            });
+        }
         emit JoinGroup(id, msg.sender);
     }
 
@@ -247,7 +255,7 @@ contract GroupChat is IGroupChat {
     }
 
     function getAliasName(uint id, address member) external view returns (string) {
-        return members[id][msg.sender].alias;
+        return members[id][member].alias;
     }
 
     /**
@@ -261,6 +269,7 @@ contract GroupChat is IGroupChat {
         require(members[id][member].existed, "The member not exists");
         groups[id].cnt -= 1;
         members[id][member].existed = false;
+        members[id][member].removed = true;
         emit RemoveMember(id, groups[id].owner, member);
     }
 

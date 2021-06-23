@@ -131,6 +131,7 @@ interface IGroupChat {
 
     /**
      * The admin removes a member of a group
+     * If be removed, then can't join again.
      * Emits a {RemoveMember} event
      */
     function remove(uint id, address member) external;
