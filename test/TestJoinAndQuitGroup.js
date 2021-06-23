@@ -136,5 +136,36 @@ contract("GroupChat", (accounts) => {
     } catch(error) {
       assert.ok(error.toString().includes("This alias name have been used"))
     }
+    // update alias again
+    await instance.setAliasName(1, "account3-1", {from: accounts[3]})
+    // now, you can reset to account3
+    await instance.setAliasName(1, "account3", {from: accounts[3]})
+
+    try {
+      await instance.setAliasName(1, "account3", {from: accounts[5]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You haven't joinned this group"))
+    }
+
+    try {
+      await instance.setAliasName(10, "account01", {from: accounts[0]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("The group not exists"))
+    }
+
+  })
+  it("Join then send a message then quit, then join again", async ()=> {
+    const instance = await GroupChat.deployed();
+    await instance.join(1, {from: accounts[4], value: utils.cpc(0)})
+    await instance.sendMessage(1, "message", {from: accounts[4]})
+    await instance.quit(1, {from: accounts[4]})
+    await instance.join(1, {from: accounts[4], value: utils.cpc(0)})
+    let tx = await instance.sendMessage(1, "message", {from: accounts[4]})
+    truffleAssert.eventEmitted(tx, 'SendMessage', (e) => {
+      assert.equal(e.sentSeq, 2)
+      return true
+    })
   })
 })

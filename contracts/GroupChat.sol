@@ -8,7 +8,7 @@ contract GroupChat is IGroupChat {
 
     uint group_seq = 0; // The sequence of all groups
 
-    uint members_upper_limit = 100; // The member's upper_limit of a group.
+    uint public members_upper_limit = 100; // The member's upper_limit of a group.
 
     struct Member {
         uint groupID;
