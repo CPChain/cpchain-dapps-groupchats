@@ -285,7 +285,7 @@ contract GroupChat is IGroupChat {
     function ban(uint id, address member) external onlyEnabled {
         require(groups[id].existed, "The group not exists");
         require(groups[id].owner == msg.sender, "You're not the admin of the group");
-        require(groups[id].owner != member, "You can ban the owner");
+        require(groups[id].owner != member, "You can't ban the owner");
         require(members[id][member].existed, "The member not exists");
         require(!members[id][member].banned, "The member is banned now");
         members[id][member].banned = true;
