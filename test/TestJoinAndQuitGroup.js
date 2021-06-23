@@ -67,4 +67,54 @@ contract("GroupChat", (accounts) => {
     assert.equal(await instance.has(1, accounts[1]), false, 'should not have this address')
     assert.equal(await instance.countOf(1), 1, 'The cnt of group is error')
   })
+  it('Join again after quit', async ()=> {
+    const instance = await GroupChat.deployed();
+    let tx = await instance.join(1, {from: accounts[1], value: utils.cpc(0)})
+    truffleAssert.eventEmitted(tx, 'JoinGroup', (e) => {
+      assert.equal(e.id, 1)
+      assert.equal(e.addr, accounts[1])
+      return true
+    })
+    assert.equal(await instance.has(1, accounts[1]), true, 'should have this address')
+    assert.equal(await instance.countOf(1), 2, 'The cnt of group is error')
+  })
+  it('Remove members', async ()=> {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.remove(2, accounts[0])
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You can't remove the owner"))
+    }
+    try {
+      await instance.remove(1, accounts[1], {from: accounts[1]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You're not the admin of the group"))
+    }
+    try {
+      await instance.remove(1, accounts[3], {from: accounts[0]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("The member not exists"))
+    }
+    let tx = await instance.remove(1, accounts[1])
+    truffleAssert.eventEmitted(tx, 'RemoveMember', (e) => {
+      assert.equal(e.id, 1)
+      assert.equal(e.member, accounts[1])
+      assert.equal(e.admin, accounts[0])
+      return true
+    })
+    assert.equal(await instance.has(1, accounts[1]), false, 'should not have this address')
+    assert.equal(await instance.countOf(1), 1, 'The cnt of group is error')
+  })
+  it("Join again after be removed by admin", async ()=> {
+    const instance = await GroupChat.deployed();
+    try {
+      await instance.join(1, {from: accounts[1], value: utils.cpc(0)})
+      assert.fail()  
+    } catch(error) {
+      assert.ok(error.toString().includes("You have been removed by admin"))
+    }
+  })
 })

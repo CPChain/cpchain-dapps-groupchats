@@ -70,7 +70,6 @@ contract("GroupChat", (accounts) => {
     }
   })
   it('Send message after quit group', async ()=> {
-    
+    const instance = await GroupChat.deployed();
   })
-  
 })
