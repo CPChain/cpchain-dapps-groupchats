@@ -9,6 +9,7 @@ contract GroupChat is IGroupChat {
     uint group_seq = 0; // The sequence of all groups
 
     uint public members_upper_limit = 100; // The member's upper_limit of a group.
+    uint public name_len_limit = 100; // The limit of name's length
 
     struct Member {
         uint groupID;
@@ -65,6 +66,8 @@ contract GroupChat is IGroupChat {
     }
 
     function createGroup(bool is_private, string name, string encryptedAES, uint256 price, string extend) internal returns (uint) {
+        require(bytes(name).length > 0, "Name of group is null");
+        require(bytes(name).length <= name_len_limit, "Name is too long");
         require(!group_names[name], "This group already exists");
         group_seq += 1;
         groups[group_seq] = Group({
@@ -135,6 +138,8 @@ contract GroupChat is IGroupChat {
      * Emits a {ModifyGroupName} event
      */
     function setGroupName(uint id, string name) external onlyEnabled {
+        require(bytes(name).length > 0, "Name of group is null");
+        require(bytes(name).length <= name_len_limit, "Name is too long");
         require(!group_names[name], "This group already exists");
         require(groups[id].owner == msg.sender, "Only the owner can set the name");
         group_names[groups[id].name] = false;
@@ -247,6 +252,8 @@ contract GroupChat is IGroupChat {
     }
 
     function setAliasName(uint id, string alias) external onlyEnabled {
+        require(bytes(alias).length > 0, "Alias name is null");
+        require(bytes(alias).length <= name_len_limit, "Name is too long");
         require(groups[id].existed, "The group not exists");
         require(members[id][msg.sender].existed, "You haven't joinned this group");
         require(!groups[id].aliasNames[alias], "This alias name have been used");
@@ -383,6 +390,10 @@ contract GroupChat is IGroupChat {
      */
     function isBanAll(uint id) external view returns(bool) {
         return groups[id].banAll;
+    }
+
+    function setNameLenLimit(uint len) external onlyEnabled onlyOwner {
+        name_len_limit = len;
     }
 
     /**

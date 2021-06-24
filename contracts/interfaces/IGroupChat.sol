@@ -200,6 +200,11 @@ interface IGroupChat {
     function getAliasName(uint id, address member) external view returns (string);
 
     /**
+     * Set the limit of name
+     */
+    function setNameLenLimit(uint len) external;
+
+    /**
      * Change the owner of the contract. If the address is a contract, the contract should be IAdmin.
      */
     function changeOwner(address owner) external;

@@ -174,4 +174,13 @@ contract("GroupChat", (accounts) => {
     })
     await instance.changeOwnerOfGroup(1, accounts[1], {from: accounts[1]})
   })
+  it("Create groupt with empty name", async ()=> {
+    const instance = await GroupChat.deployed()
+    try {
+      await instance.createPublicGroup('', 'xxxx', 0, '{}')
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes('Name of group is null'))
+    }
+  })
 })
