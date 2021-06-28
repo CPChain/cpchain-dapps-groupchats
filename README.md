@@ -10,6 +10,12 @@ pip install cpc-fusion
 
 cpc-fusion deploy --keystore <your keystore> --abi build/contracts/GroupChat.json
 
+# Get configs
+cpc-fusion get-configs --abi build/contracts/GroupChat.json --address <address>
+
+# Set the upper limit of members
+cpc-fusion call-func --abi build/contracts/GroupChat.json --address <address> --keystore <your keystore> --function setUpperLimit --parameters 120
+
 ```
 
 ## AES Key
