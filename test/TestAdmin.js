@@ -24,22 +24,22 @@ contract("GroupChat", (accounts) => {
     }
     await instance.changeOwner(accounts[1])
   })
-  it("Add 6 members to a group", async () => {
-    const instance = await GroupChat.deployed();
-    await instance.createPublicGroup('test', 'xxxx', 0, '{}')
+  // it("Add 6 members to a group", async () => {
+  //   const instance = await GroupChat.deployed();
+  //   await instance.createPublicGroup('test', 'xxxx', 0, '{}')
 
-    for(let i = 0; i < 5; i++) {
-      await instance.join(1, {from: accounts[1+i]})
-    }
-    assert.equal(await instance.countOf(1), 6)
-    // add another
-    try {
-      await instance.join(1, {from: accounts[6]})
-      assert.fail()
-    } catch(error) {
-      assert.ok(error.toString().includes("The group is full"))
-    }
-  })
+  //   for(let i = 0; i < 5; i++) {
+  //     await instance.join(1, {from: accounts[1+i]})
+  //   }
+  //   assert.equal(await instance.countOf(1), 6)
+  //   // add another
+  //   try {
+  //     await instance.join(1, {from: accounts[6]})
+  //     assert.fail()
+  //   } catch(error) {
+  //     assert.ok(error.toString().includes("The group is full"))
+  //   }
+  // })
   it("enable and disable", async ()=> {
     const instance = await GroupChat.deployed();
     await instance.disableContract({from: accounts[1]})

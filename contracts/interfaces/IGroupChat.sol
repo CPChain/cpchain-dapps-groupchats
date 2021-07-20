@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 interface IGroupChat {
     // CreateGroup
-    event CreateGroup(bool is_private, string name, string encryptedAES, uint256 price, string extend, uint id);
+    event CreateGroup(bool is_private, string name, string encryptedAES, uint256 price, string extend, uint id, bool need_approved);
 
     // Modify name
     event ModifyGroupName(uint id, string name);
@@ -16,8 +16,11 @@ interface IGroupChat {
     // Modify alias name
     event ModifyAliasName(uint id, address member, string alias);
 
+    // Modify if need approved
+    event ModifyNeedApproved(uint id, bool need_approved);
+
     // Join a group
-    event JoinGroup(uint id, address addr);
+    event JoinGroup(uint id, address addr, bool need_approved);
 
     // Quit a group
     event QuitGroup(uint id, address addr);
@@ -48,6 +51,12 @@ interface IGroupChat {
     // UnBan All
     event UnBanAll(uint id, address admin);
 
+    // Approve a user
+    event ApproveUser(uint id, address user);
+
+    // Reject a user
+    event RejectUser(uint id, address user, string reason);
+
     /**
      * Check if group already exists
      */
@@ -59,14 +68,14 @@ interface IGroupChat {
      * Returns a id of the group
      * Emits a {CreateGroup} event
      */
-    function createPublicGroup(string name, string encryptedAES, uint256 price, string extend) external returns (uint);
+    function createPublicGroup(string name, string encryptedAES, uint256 price, string extend, bool need_approved) external returns (uint);
 
     /**
      * Create a private group
      * Returns a id of the group
      * Emits a {CreateGroup} event
      */
-    function createPrivateGroup(string name, uint256 price, string extend) external returns (uint);
+    function createPrivateGroup(string name, uint256 price, string extend, bool need_approved) external returns (uint);
 
     /**
      * Get the group name
@@ -118,7 +127,19 @@ interface IGroupChat {
     function setEncrypedAES(uint id, string encryptedAES) external;
 
     /**
-     * Join a group
+     * Set if the group need admin of the group approve
+     * Emits a {ModifyNeedApproved} event
+     */
+    function setNeedApproved(uint id, bool need_approved) external;
+
+    /**
+     * Get if need approved
+     */
+    function getNeedApproved(uint id) external view returns (bool);
+
+    /**
+     * Join a group. The admin can get the money only after he approve the user. 
+     * If he reject, the money will back. Or will retain to the contract.
      * Emits a {JoinGroup} event
      */
     function join(uint id) external payable;
@@ -128,6 +149,18 @@ interface IGroupChat {
      * Emits a {QuitGroup} event
      */
     function quit(uint id) external;
+
+    /**
+     * Approval a user join the group
+     * Emits a {ApproveUser} event
+     */
+    function approve(uint id, address user) external;
+
+    /**
+     * Reject a user
+     * Emits a {RejectUser} event
+     */
+    function reject(uint id, address user, string reason) external;
 
     /**
      * The admin removes a member of a group

@@ -33,6 +33,8 @@ contract GroupChat is IGroupChat {
         string extend;
         bool banAll; // If banAll, notify only.
         bool existed;
+        bool need_approved;
+        mapping(address => bool) pending;
         mapping(string => bool) aliasNames;
     }
 
@@ -65,24 +67,26 @@ contract GroupChat is IGroupChat {
         enabled = false;
     }
 
-    function createGroup(bool is_private, string name, string encryptedAES, uint256 price, string extend) internal returns (uint) {
+    function createGroup(bool is_private, string name, string encryptedAES, uint256 price, string extend, bool need_approved) internal returns (uint) {
         require(bytes(name).length > 0, "Name of group is null");
         require(bytes(name).length <= name_len_limit, "Name is too long");
         require(!group_names[name], "This group already exists");
         group_seq += 1;
-        groups[group_seq] = Group({
-            id: group_seq,
-            owner: msg.sender,
-            is_private: is_private,
-            name: name,
-            price: price,
-            encryptedAES: encryptedAES,
-            extend: extend,
-            seq: 0,
-            cnt: 0,
-            banAll: false,
-            existed: true
-        });
+        // save group
+        groups[group_seq].id = group_seq;
+        groups[group_seq].owner = msg.sender;
+        groups[group_seq].is_private = is_private;
+        groups[group_seq].name = name;
+        groups[group_seq].price = price;
+        groups[group_seq].encryptedAES = encryptedAES;
+        groups[group_seq].extend = extend;
+        groups[group_seq].seq = 0;
+        groups[group_seq].cnt = 0;
+        groups[group_seq].banAll = false;
+        groups[group_seq].existed = true;
+        groups[group_seq].need_approved = need_approved;
+
+        // save the name of this group
         group_names[name] = true;
         // Add the first member to the group
         groups[group_seq].cnt += 1;
@@ -95,8 +99,9 @@ contract GroupChat is IGroupChat {
             alias: "",
             removed: false
         });
-        emit CreateGroup(is_private, name, encryptedAES, price, extend, group_seq);
-        emit JoinGroup(group_seq, msg.sender);
+        emit CreateGroup(is_private, name, encryptedAES, price, extend, group_seq, need_approved);
+        emit JoinGroup(group_seq, msg.sender, need_approved);
+        emit ApproveUser(group_seq, msg.sender);
         return group_seq;
     }
 
@@ -106,8 +111,8 @@ contract GroupChat is IGroupChat {
      * Returns a id of the group
      * Emits a {CreateGroup} event
      */
-    function createPublicGroup(string name, string encryptedAES, uint256 price, string extend) external onlyEnabled returns (uint) {
-        return createGroup(false, name, encryptedAES, price, extend);
+    function createPublicGroup(string name, string encryptedAES, uint256 price, string extend, bool need_approved) external onlyEnabled returns (uint) {
+        return createGroup(false, name, encryptedAES, price, extend, need_approved);
     }
 
     /**
@@ -122,8 +127,8 @@ contract GroupChat is IGroupChat {
      * Returns a id of the group
      * Emits a {CreateGroup} event
      */
-    function createPrivateGroup(string name, uint256 price, string extend) external onlyEnabled returns (uint) {
-        return createGroup(true, name, "", price, extend);
+    function createPrivateGroup(string name, uint256 price, string extend, bool need_approved) external onlyEnabled returns (uint) {
+        return createGroup(true, name, "", price, extend, need_approved);
     }
 
     /**
@@ -175,6 +180,24 @@ contract GroupChat is IGroupChat {
     }
 
     /**
+     * Set if the group need admin of the group approve
+     * Emits a {ModifyNeedApproved} event
+     */
+    function setNeedApproved(uint id, bool need_approved) external {
+        require(groups[id].existed, "The group not exists");
+        require(groups[id].owner == msg.sender, "Only the owner can set the price");
+        groups[id].need_approved = need_approved;
+        emit ModifyNeedApproved(id, need_approved);
+    }
+
+    /**
+     * Get if need approved
+     */
+    function getNeedApproved(uint id) external view returns (bool) {
+        return groups[id].need_approved;
+    }
+
+    /**
      * Get the extend information of a group.
      */
     function getExtend(uint id) external view returns (string) {
@@ -219,23 +242,28 @@ contract GroupChat is IGroupChat {
         require(groups[id].cnt <= members_upper_limit, "The group is full");
         require(!members[id][msg.sender].removed, "You have been removed by admin");
         require(!members[id][msg.sender].existed, "You have joinned this group");
+        require(!groups[id].pending[msg.sender], "You are in pending set now");
         require(msg.value == groups[id].price, "The value is not equal to the price");
-        groups[id].owner.transfer(msg.value);
-        groups[id].cnt += 1;
-        if (members[id][msg.sender].seq > 0) {
-            members[id][msg.sender].existed = true;
+        if(!groups[id].need_approved) {
+            groups[id].owner.transfer(msg.value);
+            groups[id].cnt += 1;
+            if (members[id][msg.sender].seq > 0) {
+                members[id][msg.sender].existed = true;
+            } else {
+                members[id][msg.sender] = Member({
+                    groupID: id,
+                    addr: msg.sender,
+                    banned: false,
+                    seq: 0,
+                    existed: true,
+                    alias: "",
+                    removed: false
+                });
+            }
         } else {
-            members[id][msg.sender] = Member({
-                groupID: id,
-                addr: msg.sender,
-                banned: false,
-                seq: 0,
-                existed: true,
-                alias: "",
-                removed: false
-            });
+            groups[id].pending[msg.sender] = true;
         }
-        emit JoinGroup(id, msg.sender);
+        emit JoinGroup(id, msg.sender, groups[id].need_approved);
     }
 
     /**
@@ -383,6 +411,50 @@ contract GroupChat is IGroupChat {
         require(groups[id].owner == msg.sender, "You're not the admin of the group");
         groups[id].banAll = false;
         emit UnBanAll(id, msg.sender);
+    }
+
+    /**
+     * Approval a user join the group
+     * Emits a {ApproveUser} event
+     */
+    function approve(uint id, address user) external {
+        require(groups[id].existed, "The group not exists");
+        require(groups[id].cnt <= members_upper_limit, "The group is full");
+        require(groups[id].pending[user], "this user not in pending set");
+        require(!members[id][msg.sender].existed, "This user have joinned this group");
+        require(groups[id].owner == msg.sender, "You're not the admin of the group");
+        groups[id].owner.transfer(groups[id].price);
+        groups[id].cnt += 1;
+        if (members[id][user].seq > 0) {
+            members[id][user].existed = true;
+        } else {
+            members[id][user] = Member({
+                groupID: id,
+                addr: user,
+                banned: false,
+                seq: 0,
+                existed: true,
+                alias: "",
+                removed: false
+            });
+        }
+        delete groups[id].pending[user];
+        emit ApproveUser(id, user);
+    }
+
+    /**
+     * Reject a user
+     * Emits a {RejectUser} event
+     */
+    function reject(uint id, address user, string reason) external {
+        require(groups[id].existed, "The group not exists");
+        require(groups[id].cnt <= members_upper_limit, "The group is full");
+        require(groups[id].owner == msg.sender, "You're not the admin of the group");
+        require(groups[id].pending[user], "this user not in pending set");
+        user.transfer(groups[id].price);
+        delete groups[id].pending[user];
+
+        emit RejectUser(id, user, reason);
     }
 
     /**
