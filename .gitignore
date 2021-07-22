@@ -3,3 +3,4 @@ coverage*
 .coverage*
 
 package-lock.json
+.env
