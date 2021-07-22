@@ -6,6 +6,8 @@
 4. 使用私钥加密
 5. 创建公开群
 
+source .env
+
 !pip install eciespy
 !pip install ecdsa
 
@@ -149,7 +151,6 @@ def submit_tx(cf, ks, tx, password_file=None):
 def main():
     instance = cf.cpc.contract(abi=abi, address=address)
     keystore = os.environ.get('ADMIN_KEYSTORE')
-    password = os.environ.get('ADMIN_PASSWORD')
 
     # 获取私钥
     with open(os.path.join(pwd, 'priv_key'), 'r') as f:
@@ -159,32 +160,36 @@ def main():
     sk = ecdsa.SigningKey.from_string(priv_key, ecdsa.SECP256k1, hashfunc=hashlib.sha256)
     
     # 生成 AES-256
+    key = random_aes()
 
+    # 签名
+    sig = sk.sign(key)
 
-    
-    group_name = "group1"
-    encryptedAES = """
-    {
-        "key": "",
-        "sig": ""
-    }
+    key_s = base64.b64encode(key).decode()
+    sig_s = base64.b64encode(sig).decode()
+    group_name = "group2"
+    encryptedAES = f"""
+    {{
+        "key": "{key_s}",
+        "sig": "{sig_s}"
+    }}
     """
     print(encryptedAES)
-    return
 
     extend = """
     {
-        "description": ""
+        "description": "desc"
     }
     """
 
     ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
     gas_price = cf.cpc.gasPrice
     nonce = cf.cpc.getTransactionCount(frm)
     tx = instance.functions.createPublicGroup(group_name, encryptedAES, 0, extend).buildTransaction({
         'gasPrice': gas_price,
         "nonce": nonce,
-        "gas": 300000,
+        "gas": 3000000,
         "from": frm,
         "value": cf.toWei(0, 'ether'),
         "type": 0,
@@ -192,19 +197,18 @@ def main():
     })
 
     # send tx
-    receipt = submit_tx(cf, ks, tx, password)
+    receipt = submit_tx(cf, ks, tx)
 
     if receipt.status != 0:
-        events = instance.events['AdminAppealRefund']().createFilter(
+        events = instance.events['CreateGroup']().createFilter(
             fromBlock=receipt.blockNumber).get_all_entries()
         for e in events:
-            value = cf.fromWei(e.args['amount'], 'ether')
-            log.info(
-                f"Refund to: {e.args['user']}, value: {value}")
+            name = e.args['name']
+            log.info(f"Create group {name}")
 
 
 if __name__ == '__main__':
-    # main()
+    main()
     # test_pri_pub()
     # test_ecdsa()
-    test_aes()
+    # test_aes()
