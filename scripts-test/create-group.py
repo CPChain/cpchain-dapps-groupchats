@@ -43,9 +43,9 @@ log = logging.getLogger()
 identity_abi = "[{\"constant\":true,\"inputs\":[],\"name\":\"count\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"enabled\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"enableContract\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"disableContract\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"remove\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"content\",\"type\":\"string\"}],\"name\":\"register\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"identity\",\"type\":\"string\"}],\"name\":\"NewIdentity\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"identity\",\"type\":\"string\"}],\"name\":\"UpdateIdentity\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"}],\"name\":\"RemoveIdentity\",\"type\":\"event\"}]"
 identity_addr = "0xC53367856164DA3De57784E0c96710088DA77e20"
 
-address = "0x262Fced17e07FaE9e5750653bc6FF5882AF9953E"
-abi = '[{"constant": true, "inputs": [], "name": "enabled", "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": true, "inputs": [], "name": "members_upper_limit", "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": true, "inputs": [], "name": "name_len_limit", "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "view", "type": "function"}, {"inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "is_private", "type": "bool"}, {"indexed": false, "name": "name", "type": "string"}, {"indexed": false, "name": "encryptedAES", "type": "string"}, {"indexed": false, "name": "price", "type": "uint256"}, {"indexed": false, "name": "extend", "type": "string"}, {"indexed": false, "name": "id", "type": "uint256"}], "name": "CreateGroup", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "name", "type": "string"}], "name": "ModifyGroupName", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "extend", "type": "string"}], "name": "ModifyGroupExtend", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "price", "type": "uint256"}], "name": "ModifyGroupPrice", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "member", "type": "address"}, {"indexed": false, "name": "alias", "type": "string"}], "name": "ModifyAliasName", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "addr", "type": "address"}], "name": "JoinGroup", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "addr", "type": "address"}], "name": "QuitGroup", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "admin", "type": "address"}, {"indexed": false, "name": "member", "type": "address"}], "name": "RemoveMember", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "admin", "type": "address"}, {"indexed": false, "name": "member", "type": "address"}], "name": "BanMember", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "admin", "type": "address"}, {"indexed": false, "name": "member", "type": "address"}], "name": "UnbanMember", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "encryptedAES", "type": "string"}, {"indexed": false, "name": "blockNumber", "type": "uint256"}], "name": "UpgradeEncryptedAES", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "sender", "type": "address"}, {"indexed": false, "name": "message", "type": "string"}, {"indexed": false, "name": "sentSeq", "type": "uint256"}, {"indexed": false, "name": "msgSeq", "type": "uint256"}, {"indexed": false, "name": "blockNumber", "type": "uint256"}], "name": "SendMessage", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "admin", "type": "address"}], "name": "ChangeGroupOwner", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "admin", "type": "address"}], "name": "BanAll", "type": "event"}, {"anonymous": false, "inputs": [{"indexed": false, "name": "id", "type": "uint256"}, {"indexed": false, "name": "admin", "type": "address"}], "name": "UnBanAll", "type": "event"}, {"constant": false, "inputs": [], "name": "enableContract", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [], "name": "disableContract", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "name", "type": "string"}, {"name": "encryptedAES", "type": "string"}, {"name": "price", "type": "uint256"}, {"name": "extend", "type": "string"}], "name": "createPublicGroup", "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "name", "type": "string"}], "name": "checkGroupName", "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "name", "type": "string"}, {"name": "price", "type": "uint256"}, {"name": "extend", "type": "string"}], "name": "createPrivateGroup", "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}], "name": "getGroupName", "outputs": [{"name": "", "type": "string"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "name", "type": "string"}], "name": "setGroupName", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}], "name": "countOf", "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}], "name": "getPrice", "outputs": [{"name": "", "type": "uint256"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "price", "type": "uint256"}], "name": "setPrice", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}], "name": "getExtend", "outputs": [{"name": "", "type": "string"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "extend", "type": "string"}], "name": "setExtend", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}], "name": "getEncryptedAES", "outputs": [{"name": "", "type": "string"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "encryptedAES", "type": "string"}], "name": "setEncrypedAES", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}], "name": "join", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}], "name": "quit", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "alias", "type": "string"}], "name": "setAliasName", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}, {"name": "member", "type": "address"}], "name": "getAliasName", "outputs": [{"name": "", "type": "string"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "member", "type": "address"}], "name": "remove", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "member", "type": "address"}], "name": "ban", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "member", "type": "address"}], "name": "unban", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}, {"name": "member", "type": "address"}], "name": "isBanned", "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}, {"name": "member", "type": "address"}], "name": "has", "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "limit", "type": "uint256"}], "name": "setUpperLimit", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "to", "type": "address"}], "name": "changeOwnerOfGroup", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}, {"name": "message", "type": "string"}], "name": "sendMessage", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}], "name": "banAll", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "id", "type": "uint256"}], "name": "unbanAll", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": true, "inputs": [{"name": "id", "type": "uint256"}], "name": "isBanAll", "outputs": [{"name": "", "type": "bool"}], "payable": false, "stateMutability": "view", "type": "function"}, {"constant": false, "inputs": [{"name": "len", "type": "uint256"}], "name": "setNameLenLimit", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}, {"constant": false, "inputs": [{"name": "to", "type": "address"}], "name": "changeOwner", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function"}]'
-
+address = "0x46C50313bFdE73Fe7F1dB07Daf23c24d70B12691"
+with open(os.path.join('/Users/liaojinlong/Workspace/CPChain/cpchain-dapps-groupchats/build/contracts/GroupChat.json'), 'r') as f:
+    abi = json.load(f)['abi']
 
 def identidy_decode(key):
     key = base64.b64decode(key)
@@ -148,7 +148,7 @@ def submit_tx(cf, ks, tx, password_file=None):
     return receipt
 
 
-def main():
+def create_group():
     instance = cf.cpc.contract(abi=abi, address=address)
     keystore = os.environ.get('ADMIN_KEYSTORE')
 
@@ -207,8 +207,69 @@ def main():
             log.info(f"Create group {name}")
 
 
+def modify_group_name():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.setGroupName(1, "group1-modified3").buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['ModifyGroupName']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        actual = instance.functions.getGroupName(1).call()
+        for e in events:
+            name = e.args['name']
+            log.info(f"Modify group name to {name}, actual: {actual}")
+
+
+def modify_extend_info():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.setExtend(1, '{"description":"123456789101111111223456"}').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['ModifyGroupExtend']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        actual = instance.functions.getExtend(1).call()
+        for e in events:
+            name = e.args['extend']
+            log.info(f"Modify group {e.args['id']} extend to {name}, actual: {actual}")
+
 if __name__ == '__main__':
-    main()
+    # modify_group_name()
+    modify_extend_info()
+    # create_group()
     # test_pri_pub()
     # test_ecdsa()
     # test_aes()
