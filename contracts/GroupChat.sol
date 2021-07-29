@@ -413,7 +413,7 @@ contract GroupChat is IGroupChat, IApplicationManager {
      * Add application to group chat
      * Emits {AddApplication} event
      */
-    function addApplication(address addr) external {
+    function addApplication(address addr) external onlyEnabled onlyOwner {
         require(!applications[addr], "This application already exists!");
         applications[addr] = true;
         emit AddApplication(addr);
@@ -423,7 +423,7 @@ contract GroupChat is IGroupChat, IApplicationManager {
      * Remove application from group chat
      * Emits {RemoveApplication} event
      */
-    function removeApplication(address addr) external {
+    function removeApplication(address addr) external onlyEnabled onlyOwner {
         require(applications[addr], "Not found");
         delete applications[addr];
         emit RemoveApplication(addr);
