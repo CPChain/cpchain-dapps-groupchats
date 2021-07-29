@@ -1,8 +1,9 @@
 pragma solidity ^0.4.24;
 
 import "./interfaces/IGroupChat.sol";
+import "./interfaces/IApplicationManager.sol";
 
-contract GroupChat is IGroupChat {
+contract GroupChat is IGroupChat, IApplicationManager {
     address owner; // owner has permissions to modify parameters
     bool public enabled = true; // if upgrade contract, then the old contract should be disabled
 
@@ -41,6 +42,8 @@ contract GroupChat is IGroupChat {
     mapping(string => bool) private group_names; // all groups
 
     mapping(uint => mapping(address => Member)) internal members;
+
+    mapping(address => bool) private applications; // applications
 
     modifier onlyOwner() {
         require(msg.sender == owner, "You're not the owner of this contract");
@@ -354,10 +357,13 @@ contract GroupChat is IGroupChat {
      */
     function sendMessage(uint id, string message) external onlyEnabled {
         require(groups[id].existed, "The group not exists");
-        require(members[id][msg.sender].existed, "You're not exists in this group");
-        require(!members[id][msg.sender].banned, "You're banned now");
-        if (groups[id].banAll) {
-            require(msg.sender == groups[id].owner, "The group only can allow the owner send message");
+        // If the sender not in applications
+        if (!applications[msg.sender]) {
+            require(members[id][msg.sender].existed, "You're not exists in this group");
+            require(!members[id][msg.sender].banned, "You're banned now");
+            if (groups[id].banAll) {
+                require(msg.sender == groups[id].owner, "The group only can allow the owner send message");
+            }
         }
         // recvSeq ++
         groups[id].seq += 1;
@@ -401,5 +407,25 @@ contract GroupChat is IGroupChat {
      */
     function changeOwner(address to) external onlyEnabled onlyOwner {
         owner = to;
+    }
+
+    /**
+     * Add application to group chat
+     * Emits {AddApplication} event
+     */
+    function addApplication(address addr) external {
+        require(!applications[addr], "This application already exists!");
+        applications[addr] = true;
+        emit AddApplication(addr);
+    }
+
+    /**
+     * Remove application from group chat
+     * Emits {RemoveApplication} event
+     */
+    function removeApplication(address addr) external {
+        require(applications[addr], "Not found");
+        delete applications[addr];
+        emit RemoveApplication(addr);
     }
 }
