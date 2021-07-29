@@ -43,7 +43,7 @@ log = logging.getLogger()
 identity_abi = "[{\"constant\":true,\"inputs\":[],\"name\":\"count\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"enabled\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"enableContract\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"disableContract\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"remove\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"content\",\"type\":\"string\"}],\"name\":\"register\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"identity\",\"type\":\"string\"}],\"name\":\"NewIdentity\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"identity\",\"type\":\"string\"}],\"name\":\"UpdateIdentity\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"}],\"name\":\"RemoveIdentity\",\"type\":\"event\"}]"
 identity_addr = "0xC53367856164DA3De57784E0c96710088DA77e20"
 
-address = "0x46C50313bFdE73Fe7F1dB07Daf23c24d70B12691"
+address = "0x262Fced17e07FaE9e5750653bc6FF5882AF9953E"
 with open(os.path.join('/Users/liaojinlong/Workspace/CPChain/cpchain-dapps-groupchats/build/contracts/GroupChat.json'), 'r') as f:
     abi = json.load(f)['abi']
 
@@ -266,9 +266,71 @@ def modify_extend_info():
             name = e.args['extend']
             log.info(f"Modify group {e.args['id']} extend to {name}, actual: {actual}")
 
+def modify_price():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.setPrice(1, cf.toWei(2, 'ether')).buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['ModifyGroupPrice']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        actual = instance.functions.getPrice(1).call()
+        for e in events:
+            name = e.args['price']
+            log.info(f"Modify group {e.args['id']} price to {name}, actual: {actual}")
+
+
+def modify_alias_name():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.setAliasName(1, 'admin').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['ModifyAliasName']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        actual = instance.functions.getAliasName(1, frm).call()
+        for e in events:
+            name = e.args['alias']
+            log.info(f"Modify alias name of {e.args['id']} to {name}, actual: {actual}")
+
+
 if __name__ == '__main__':
     # modify_group_name()
-    modify_extend_info()
+    # modify_extend_info()
+    # modify_price()
+    modify_alias_name()
     # create_group()
     # test_pri_pub()
     # test_ecdsa()
