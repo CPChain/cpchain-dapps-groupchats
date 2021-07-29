@@ -39,4 +39,16 @@ contract("GroupChat", (accounts) => {
     // add after remove
     await instance.addApplication(accounts[1])
   })
+  it("send message", async ()=> {
+    const instance = await GroupChat.deployed();
+    // send message
+    try {
+      await instance.sendMessage(1, 'message', {from: accounts[2]})
+      assert.fail()
+    } catch(error) {
+      assert.ok(error.toString().includes("You're not exists in this group"))
+    }
+    // send message with application
+    await instance.sendMessage(1, 'message', {from: accounts[1]})
+  })
 })
