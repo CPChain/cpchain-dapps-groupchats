@@ -43,7 +43,7 @@ log = logging.getLogger()
 identity_abi = "[{\"constant\":true,\"inputs\":[],\"name\":\"count\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"enabled\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"enableContract\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"disableContract\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"remove\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"content\",\"type\":\"string\"}],\"name\":\"register\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"identity\",\"type\":\"string\"}],\"name\":\"NewIdentity\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"identity\",\"type\":\"string\"}],\"name\":\"UpdateIdentity\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"who\",\"type\":\"address\"}],\"name\":\"RemoveIdentity\",\"type\":\"event\"}]"
 identity_addr = "0xC53367856164DA3De57784E0c96710088DA77e20"
 
-address = "0x262Fced17e07FaE9e5750653bc6FF5882AF9953E"
+address = "0x99a1241822011A95aBF6d32c00BB3dF0A6b717Ee"
 with open(os.path.join('/Users/liaojinlong/Workspace/CPChain/cpchain-dapps-groupchats/build/contracts/GroupChat.json'), 'r') as f:
     abi = json.load(f)['abi']
 
@@ -167,7 +167,7 @@ def create_group():
 
     key_s = base64.b64encode(key).decode()
     sig_s = base64.b64encode(sig).decode()
-    group_name = "group2"
+    group_name = "group3"
     encryptedAES = f"""
     {{
         "key": "{key_s}",
@@ -215,7 +215,7 @@ def modify_group_name():
     log.info(f"From {frm}")
     gas_price = cf.cpc.gasPrice
     nonce = cf.cpc.getTransactionCount(frm)
-    tx = instance.functions.setGroupName(1, "group1-modified3").buildTransaction({
+    tx = instance.functions.setGroupName(2, "group2").buildTransaction({
         'gasPrice': gas_price,
         "nonce": nonce,
         "gas": 3000000,
@@ -245,7 +245,7 @@ def modify_extend_info():
     log.info(f"From {frm}")
     gas_price = cf.cpc.gasPrice
     nonce = cf.cpc.getTransactionCount(frm)
-    tx = instance.functions.setExtend(1, '{"description":"123456789101111111223456"}').buildTransaction({
+    tx = instance.functions.setExtend(1, '{"description":"desc0805"}').buildTransaction({
         'gasPrice': gas_price,
         "nonce": nonce,
         "gas": 3000000,
@@ -274,7 +274,7 @@ def modify_price():
     log.info(f"From {frm}")
     gas_price = cf.cpc.gasPrice
     nonce = cf.cpc.getTransactionCount(frm)
-    tx = instance.functions.setPrice(1, cf.toWei(2, 'ether')).buildTransaction({
+    tx = instance.functions.setPrice(1, cf.toWei(0, 'ether')).buildTransaction({
         'gasPrice': gas_price,
         "nonce": nonce,
         "gas": 3000000,
@@ -326,11 +326,243 @@ def modify_alias_name():
             log.info(f"Modify alias name of {e.args['id']} to {name}, actual: {actual}")
 
 
+def ban_all():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.banAll(1).buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['BanAll']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 BanAll 事件')
+
+
+def unban_all():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.unbanAll(1).buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['UnBanAll']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 UnBanAll 事件')
+
+
+def user1_join():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('USER1')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.join(2).buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['JoinGroup']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 JoinGroup 事件')
+
+def user1_quit():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('USER1')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.quit(1).buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 5000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['QuitGroup']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 QuitGroup 事件')
+
+
+def send_message():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('USER1')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.sendMessage(1, "xxxx").buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 5000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['SendMessage']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 SendMessage 事件')    
+
+
+def ban_user():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.ban(1, '0x0cE388B3CB9cb7dC9D26adf1Dc834b6E98927F23').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['BanMember']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 BanMember 事件')
+
+
+def unban_user():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.unban(1, '0x0cE388B3CB9cb7dC9D26adf1Dc834b6E98927F23').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['UnbanMember']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 UnbanMember 事件')
+
+
+
+def remove_user():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.remove(2, '0x0cE388B3CB9cb7dC9D26adf1Dc834b6E98927F23').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['RemoveMember']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 RemoveMember 事件')
+
+
 if __name__ == '__main__':
     # modify_group_name()
     # modify_extend_info()
     # modify_price()
-    modify_alias_name()
+    # modify_alias_name()
+    # ban_all()
+    # unban_all()
+    # user1_join()
+    # send_message()
+    # ban_user()
+    # unban_user()
+    remove_user()
+    # user1_quit()
     # create_group()
     # test_pri_pub()
     # test_ecdsa()

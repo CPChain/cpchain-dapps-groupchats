@@ -1,0 +1,598 @@
+{
+  "contractName": "IApplicationManager",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "addr",
+          "type": "address"
+        }
+      ],
+      "name": "AddApplication",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "addr",
+          "type": "address"
+        }
+      ],
+      "name": "RemoveApplication",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "addr",
+          "type": "address"
+        }
+      ],
+      "name": "addApplication",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "addr",
+          "type": "address"
+        }
+      ],
+      "name": "removeApplication",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.24;\n\ninterface IApplicationManager {\n    // add application\n    event AddApplication(address addr);\n    // remove application\n    event RemoveApplication(address addr);\n\n    /**\n     * Add application to group chat\n     * Emits {AddApplication} event\n     */\n    function addApplication(address addr) external;\n\n    /**\n     * Remove application from group chat\n     * Emits {RemoveApplication} event\n     */\n    function removeApplication(address addr) external;\n}\n",
+  "sourcePath": "/Users/liaojinlong/Workspace/CPChain/cpchain-dapps-groupchats/contracts/interfaces/IApplicationManager.sol",
+  "ast": {
+    "absolutePath": "/Users/liaojinlong/Workspace/CPChain/cpchain-dapps-groupchats/contracts/interfaces/IApplicationManager.sol",
+    "exportedSymbols": {
+      "IApplicationManager": [
+        1527
+      ]
+    },
+    "id": 1528,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1508,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 1527,
+        "linearizedBaseContracts": [
+          1527
+        ],
+        "name": "IApplicationManager",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 1512,
+            "name": "AddApplication",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 1511,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1510,
+                  "indexed": false,
+                  "name": "addr",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1512,
+                  "src": "106:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1509,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "106:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "105:14:1"
+            },
+            "src": "85:35:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 1516,
+            "name": "RemoveApplication",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 1515,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1514,
+                  "indexed": false,
+                  "name": "addr",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1516,
+                  "src": "175:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1513,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "175:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "174:14:1"
+            },
+            "src": "151:38:1"
+          },
+          {
+            "body": null,
+            "documentation": "Add application to group chat\nEmits {AddApplication} event",
+            "id": 1521,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "addApplication",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1519,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1518,
+                  "name": "addr",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1521,
+                  "src": "308:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1517,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "308:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "307:14:1"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1520,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "330:0:1"
+            },
+            "scope": 1527,
+            "src": "284:47:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "Remove application from group chat\nEmits {RemoveApplication} event",
+            "id": 1526,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "removeApplication",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1524,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1523,
+                  "name": "addr",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1526,
+                  "src": "461:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1522,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "461:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "460:14:1"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1525,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "483:0:1"
+            },
+            "scope": 1527,
+            "src": "434:50:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 1528,
+        "src": "26:460:1"
+      }
+    ],
+    "src": "0:487:1"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/liaojinlong/Workspace/CPChain/cpchain-dapps-groupchats/contracts/interfaces/IApplicationManager.sol",
+      "exportedSymbols": {
+        "IApplicationManager": [
+          1527
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".24"
+          ]
+        },
+        "id": 1508,
+        "name": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "documentation": null,
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            1527
+          ],
+          "name": "IApplicationManager",
+          "scope": 1528
+        },
+        "children": [
+          {
+            "attributes": {
+              "anonymous": false,
+              "documentation": null,
+              "name": "AddApplication"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "addr",
+                      "scope": 1512,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 1509,
+                        "name": "ElementaryTypeName",
+                        "src": "106:7:1"
+                      }
+                    ],
+                    "id": 1510,
+                    "name": "VariableDeclaration",
+                    "src": "106:12:1"
+                  }
+                ],
+                "id": 1511,
+                "name": "ParameterList",
+                "src": "105:14:1"
+              }
+            ],
+            "id": 1512,
+            "name": "EventDefinition",
+            "src": "85:35:1"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "documentation": null,
+              "name": "RemoveApplication"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "addr",
+                      "scope": 1516,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 1513,
+                        "name": "ElementaryTypeName",
+                        "src": "175:7:1"
+                      }
+                    ],
+                    "id": 1514,
+                    "name": "VariableDeclaration",
+                    "src": "175:12:1"
+                  }
+                ],
+                "id": 1515,
+                "name": "ParameterList",
+                "src": "174:14:1"
+              }
+            ],
+            "id": 1516,
+            "name": "EventDefinition",
+            "src": "151:38:1"
+          },
+          {
+            "attributes": {
+              "body": null,
+              "constant": false,
+              "documentation": "Add application to group chat\nEmits {AddApplication} event",
+              "implemented": false,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "addApplication",
+              "payable": false,
+              "scope": 1527,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "addr",
+                      "scope": 1521,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 1517,
+                        "name": "ElementaryTypeName",
+                        "src": "308:7:1"
+                      }
+                    ],
+                    "id": 1518,
+                    "name": "VariableDeclaration",
+                    "src": "308:12:1"
+                  }
+                ],
+                "id": 1519,
+                "name": "ParameterList",
+                "src": "307:14:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1520,
+                "name": "ParameterList",
+                "src": "330:0:1"
+              }
+            ],
+            "id": 1521,
+            "name": "FunctionDefinition",
+            "src": "284:47:1"
+          },
+          {
+            "attributes": {
+              "body": null,
+              "constant": false,
+              "documentation": "Remove application from group chat\nEmits {RemoveApplication} event",
+              "implemented": false,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "removeApplication",
+              "payable": false,
+              "scope": 1527,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "addr",
+                      "scope": 1526,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 1522,
+                        "name": "ElementaryTypeName",
+                        "src": "461:7:1"
+                      }
+                    ],
+                    "id": 1523,
+                    "name": "VariableDeclaration",
+                    "src": "461:12:1"
+                  }
+                ],
+                "id": 1524,
+                "name": "ParameterList",
+                "src": "460:14:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1525,
+                "name": "ParameterList",
+                "src": "483:0:1"
+              }
+            ],
+            "id": 1526,
+            "name": "FunctionDefinition",
+            "src": "434:50:1"
+          }
+        ],
+        "id": 1527,
+        "name": "ContractDefinition",
+        "src": "26:460:1"
+      }
+    ],
+    "id": 1528,
+    "name": "SourceUnit",
+    "src": "0:487:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.25+commit.59dbf8f1.Linux.g++"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-08-03T02:49:31.206Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {
+      "addApplication(address)": {
+        "notice": "Add application to group chat Emits {AddApplication} event"
+      },
+      "removeApplication(address)": {
+        "notice": "Remove application from group chat Emits {RemoveApplication} event"
+      }
+    }
+  }
+}
