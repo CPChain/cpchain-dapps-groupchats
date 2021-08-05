@@ -168,12 +168,7 @@ def create_group():
     key_s = base64.b64encode(key).decode()
     sig_s = base64.b64encode(sig).decode()
     group_name = "group3"
-    encryptedAES = f"""
-    {{
-        "key": "{key_s}",
-        "sig": "{sig_s}"
-    }}
-    """
+    encryptedAES = f"""{{"key": "{key_s}","sig": "{sig_s}"}}"""
     print(encryptedAES)
 
     extend = """
@@ -550,7 +545,81 @@ def remove_user():
             raise Exception('未触发 RemoveMember 事件')
 
 
+def change_owner_of_group():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('USER1')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.changeOwnerOfGroup(1, '0x1455D180E3adE94ebD9cC324D22a9065d1F5F575').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['ChangeGroupOwner']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 ChangeGroupOwner 事件')
+
+
+def upgrade_aes():
+    # 读取身份注册的私钥
+    with open(os.path.join(pwd, 'priv_key'), 'r') as f:
+        priv_key = "".join(f.readlines()).strip()
+        priv_key = identidy_decode(priv_key)
+
+    sk = ecdsa.SigningKey.from_string(priv_key, ecdsa.SECP256k1, hashfunc=hashlib.sha256)
+    
+    # 生成 AES-256
+    key = random_aes()
+
+    # 使用身份注册的私钥对 AES 密钥签名
+    sig = sk.sign(key)
+
+    key_s = base64.b64encode(key).decode()
+    sig_s = base64.b64encode(sig).decode()
+    encryptedAES = f"""{{"key": "{key_s}","sig": "{sig_s}"}}"""
+
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.setEncrypedAES(1, encryptedAES).buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['UpgradeEncryptedAES']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 UpgradeEncryptedAES 事件')
+
+
 if __name__ == '__main__':
+    # create_group()
     # modify_group_name()
     # modify_extend_info()
     # modify_price()
@@ -558,12 +627,13 @@ if __name__ == '__main__':
     # ban_all()
     # unban_all()
     # user1_join()
+    # user1_quit()
     # send_message()
     # ban_user()
     # unban_user()
-    remove_user()
-    # user1_quit()
-    # create_group()
+    # change_owner_of_group()
+    upgrade_aes()
+    # remove_user()
     # test_pri_pub()
     # test_ecdsa()
     # test_aes()
