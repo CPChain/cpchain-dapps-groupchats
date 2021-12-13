@@ -385,7 +385,7 @@ def user1_join():
     log.info(f"From {frm}")
     gas_price = cf.cpc.gasPrice
     nonce = cf.cpc.getTransactionCount(frm)
-    tx = instance.functions.join(2).buildTransaction({
+    tx = instance.functions.join(1).buildTransaction({
         'gasPrice': gas_price,
         "nonce": nonce,
         "gas": 3000000,
@@ -617,6 +617,61 @@ def upgrade_aes():
         if len(events) == 0:
             raise Exception('未触发 UpgradeEncryptedAES 事件')
 
+def add_application():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.addApplication('0x0cE388B3CB9cb7dC9D26adf1Dc834b6E98927F23').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['AddApplication']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 AddApplication 事件')
+
+def remove_application():
+    instance = cf.cpc.contract(abi=abi, address=address)
+    keystore = os.environ.get('ADMIN_KEYSTORE')
+
+    ks, frm = load_keystore(keystore)
+    log.info(f"From {frm}")
+    gas_price = cf.cpc.gasPrice
+    nonce = cf.cpc.getTransactionCount(frm)
+    tx = instance.functions.removeApplication('0x0cE388B3CB9cb7dC9D26adf1Dc834b6E98927F23').buildTransaction({
+        'gasPrice': gas_price,
+        "nonce": nonce,
+        "gas": 3000000,
+        "from": frm,
+        "value": cf.toWei(0, 'ether'),
+        "type": 0,
+        "chainId": 337
+    })
+
+    # send tx
+    receipt = submit_tx(cf, ks, tx)
+
+    if receipt.status != 0:
+        events = instance.events['RemoveApplication']().createFilter(
+            fromBlock=receipt.blockNumber).get_all_entries()
+        if len(events) == 0:
+            raise Exception('未触发 RemoveApplication 事件')
+
+
 
 if __name__ == '__main__':
     # create_group()
@@ -626,13 +681,15 @@ if __name__ == '__main__':
     # modify_alias_name()
     # ban_all()
     # unban_all()
-    # user1_join()
+    user1_join()
     # user1_quit()
     # send_message()
     # ban_user()
     # unban_user()
     # change_owner_of_group()
-    upgrade_aes()
+    # upgrade_aes()
+    # add_application()
+    # remove_application()
     # remove_user()
     # test_pri_pub()
     # test_ecdsa()
